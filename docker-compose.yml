@@ -1,24 +1,29 @@
 services:
   db:
-    container_name: db
     image: postgres:16
     restart: always
     environment:
-      - POSTGRES_USER=postgres
-      - POSTGRES_PASSWORD=password
-      - POSTGRES_DB=fast-pizza
+      POSTGRES_USER: postgres
+      POSTGRES_PASSWORD: password
+      POSTGRES_DB: fast-pizza
     ports:
       - 5432:5432
     volumes:
-      - db-data:/var/lib/postgresql/data
+      - fast-pizza-data:/var/lib/postgresql/data
+
+    healthcheck:
+      test: ["CMD-SHELL", "pg_isready -U postgres"]
+      interval: 5s
+      timeout: 5s
+      retries: 5
 
   adminer:
     image: adminer:latest
-    container_name: adminer
+    container_name: fast-pizza-adminer
     ports:
       - "8080:8080"
     depends_on:
       - db
 
 volumes:
-  db-data:
+  fast-pizza-data:
